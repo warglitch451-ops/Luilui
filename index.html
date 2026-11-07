@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZUDIC.AI — AI Website Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090b12;color:#f4f5fa;font-family:Arial,sans-serif}
+header{height:65px;border-bottom:1px solid #252938;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.logo{font-size:22px;font-weight:800;color:#9d8cff}
+button{background:#7762ed;color:white;border:0;border-radius:8px;padding:11px 15px;cursor:pointer;font-weight:bold}
+button:hover{filter:brightness(1.15)}
+button.secondary{background:#252a3a}
+input,textarea{background:#111522;border:1px solid #30364a;color:white;border-radius:8px;padding:12px;width:100%;outline:none}
+input:focus,textarea:focus{border-color:#8c7aff}
+main{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 65px)}
+aside{padding:20px;border-right:1px solid #252938}
+section{padding:20px;min-width:0}
+h3{font-size:14px;color:#aeb5c8;margin-top:25px}
+small,.muted{color:#9299ad}
+.field{margin:12px 0}
+.field label{display:block;font-size:12px;color:#b7bdd0;margin-bottom:7px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.workspace{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:18px}
+.panel{background:#111522;border:1px solid #252b3b;border-radius:12px;overflow:hidden}
+.panelhead{padding:13px;border-bottom:1px solid #252b3b;font-size:13px;font-weight:bold}
+#editor{height:65vh;border:0;border-radius:0;resize:vertical;font-family:monospace;font-size:12px;line-height:1.5}
+iframe{width:100%;height:65vh;background:white;border:0}
+#status{font-size:12px;color:#a8aeba;margin-top:10px;min-height:20px}
+@media(max-width:800px){main{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid #252938}#editor,iframe{height:420px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ZUDIC.AI</div>
+  <div class="muted">AI Website Studio</div>
+</header>
+
+<main>
+<aside>
+  <h3>GEMINI API CONTROL CENTER</h3>
+
+  <div class="field">
+    <label>Gemini API Key</label>
+    <input id="apiKey" type="password" placeholder="Paste your Gemini API key">
+  </div>
+
+  <div class="actions">
+    <button class="secondary" onclick="toggleKey()">Show / Hide</button>
+    <button onclick="saveSettings()">Save API</button>
+  </div>
+
+  <div class="field">
+    <label>Gemini Model ID</label>
+    <input id="model" placeholder="Enter exact Gemini model ID">
+  </div>
+
+  <div class="actions">
+    <button class="secondary" onclick="testAPI()">Test Connection</button>
+  </div>
+
+  <div id="status">API not configured.</div>
+
+  <h3>WEBSITE GENERATOR</h3>
+  <div class="field">
+    <label>Describe your website</label>
+    <textarea id="prompt" rows="6" placeholder="Example: Create a premium fashion ecommerce website with product cards, categories, shopping cart and modern design."></textarea>
+  </div>
+  <button style="width:100%" onclick="generateSite()">Generate Website</button>
+
+  <h3>AI WEBSITE EDITOR</h3>
+  <div class="field">
+    <label>Tell AI what to change</label>
+    <textarea id="editPrompt" rows="3" placeholder="Example: Make the website more premium and add a hero section."></textarea>
+  </div>
+  <button style="width:100%" onclick="editSite()">Edit With AI</button>
+
+  <h3>PROJECT</h3>
+  <div class="actions">
+    <button class="secondary" onclick="downloadSite()">Download HTML</button>
+    <button class="secondary" onclick="updatePreview()">Refresh Preview</button>
+  </div>
+</aside>
+
+<section>
+  <h2>Website Workspace</h2>
+  <p class="muted">Generate, edit and preview your website in one place.</p>
+
+  <div class="workspace">
+    <div class="panel">
+      <div class="panelhead">HTML CODE EDITOR</div>
+      <textarea id="editor" spellcheck="false" placeholder="Your generated HTML will appear here..."></textarea>
+    </div>
+
+    <div class="panel">
+      <div class="panelhead">LIVE WEBSITE PREVIEW</div>
+      <iframe id="preview" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function setStatus(message){
+  $("status").textContent = message;
+}
+
+function toggleKey(){
+  $("apiKey").type =
+    $("apiKey").type === "password" ? "text" : "password";
+}
+
+function saveSettings(){
+  const key = $("apiKey").value.trim();
+  const model = $("model").value.trim();
+
+  if(!key || !model){
+    setStatus("Enter both your API key and model ID.");
+    return;
+  }
+
+  localStorage.setItem("zudic_gemini_key",key);
+  localStorage.setItem("zudic_gemini_model",model);
+  setStatus("API settings saved in this browser.");
+}
+
+function loadSettings(){
+  $("apiKey").value = localStorage.getItem("zudic_gemini_key") || "";
+  $("model").value = localStorage.getItem("zudic_gemini_model") || "";
+}
+
+async function callGemini(prompt){
+  const key = $("apiKey").value.trim();
+  const model = $("model").value.trim();
+
+  if(!key || !model){
+    throw new Error("Enter your Gemini API key and model ID first.");
+  }
+
+  const endpoint =
+    "https://generativelanguage.googleapis.com/v1beta/models/" +
+    encodeURIComponent(model) +
+    ":generateContent?key=" + encodeURIComponent(key);
+
+  const response = await fetch(endpoint,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      systemInstruction:{
+        parts:[{
+          text:"You are ZUDIC AI, an expert website developer. Return complete, working, self-contained HTML with embedded CSS and JavaScript. Return ONLY the HTML document. Do not use Markdown code fences."
+        }]
+      },
+      contents:[{
+        role:"user",
+        parts:[{text:prompt}]
+      }],
+      generationConfig:{
+        temperature:0.7,
+        maxOutputTokens:12000
+      }
+    })
+  });
+
+  const data = await response.json();
+
+  if(!response.ok){
+    throw new Error(data.error?.message || "Gemini API request failed.");
+  }
+
+  const result = data.candidates?.[0]?.content?.parts
+    ?.map(part => part.text || "")
+    .join("");
+
+  if(!result) throw new Error("Gemini returned an empty response.");
+
+  return result
+    .replace(/^```html\s*/i,"")
+    .replace(/^```\s*/,"")
+    .replace(/\s*```$/,"")
+    .trim();
+}
+
+async function testAPI(){
+  try{
+    setStatus("Testing Gemini connection...");
+    const result = await callGemini("Reply with exactly: ZUDIC AI CONNECTED");
+    setStatus("Connection successful: " + result.slice(0,100));
+  }catch(error){
+    setStatus("Connection failed: " + error.message);
+  }
+}
+
+async function generateSite(){
+  const prompt = $("prompt").value.trim();
+  if(!prompt){
+    setStatus("Describe the website you want to create.");
+    return;
+  }
+
+  try{
+    setStatus("Gemini is generating your website...");
+    const html = await callGemini(
+      "Create a complete professional website based on this brief:\n" + prompt +
+      "\nInclude responsive design, attractive visuals, working navigation and useful interactions."
+    );
+
+    $("editor").value = html;
+    updatePreview();
+    setStatus("Website generated successfully.");
+  }catch(error){
+    setStatus("Generation failed: " + error.message);
+  }
+}
+
+async function editSite(){
+  const instruction = $("editPrompt").value.trim();
+  const currentCode = $("editor").value;
+
+  if(!instruction || !currentCode){
+    setStatus("Enter an edit instruction and generate a website first.");
+    return;
+  }
+
+  try{
+    setStatus("AI is editing your website...");
+    const html = await callGemini(
+      "Modify this existing website according to the instruction. Preserve existing working features where possible. Return the COMPLETE updated HTML only.\n\nINSTRUCTION:\n" +
+      instruction + "\n\nCURRENT HTML:\n" + currentCode
+    );
+
+    $("editor").value = html;
+    updatePreview();
+    setStatus("Website updated successfully.");
+  }catch(error){
+    setStatus("AI editing failed: " + error.message);
+  }
+}
+
+function updatePreview(){
+  $("preview").srcdoc = $("editor").value;
+}
+
+function downloadSite(){
+  const html = $("editor").value;
+  if(!html){
+    setStatus("Generate a website before downloading.");
+    return;
+  }
+
+  const blob = new Blob([html],{type:"text/html"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "zudic-ai-website.html";
+  a.click();
+  URL.revokeObjectURL(url);
+  setStatus("HTML download started.");
+}
+
+$("editor").addEventListener("input",updatePreview);
+
+loadSettings();
+</script>
+</body>
+</html>
