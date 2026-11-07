@@ -3,269 +3,479 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZUDIC.AI — AI Website Studio</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZUDIC.AI | Agency Studio</title>
 <style>
+:root{--bg:#090b12;--panel:#111522;--panel2:#171c2b;--line:#292f42;--text:#f5f6ff;--muted:#929bb2;--purple:#8b75ff;--cyan:#5de1db}
 *{box-sizing:border-box}
-body{margin:0;background:#090b12;color:#f4f5fa;font-family:Arial,sans-serif}
-header{height:65px;border-bottom:1px solid #252938;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
-.logo{font-size:22px;font-weight:800;color:#9d8cff}
-button{background:#7762ed;color:white;border:0;border-radius:8px;padding:11px 15px;cursor:pointer;font-weight:bold}
+body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 15px;background:var(--purple);color:white;font-weight:700}
 button:hover{filter:brightness(1.15)}
-button.secondary{background:#252a3a}
-input,textarea{background:#111522;border:1px solid #30364a;color:white;border-radius:8px;padding:12px;width:100%;outline:none}
-input:focus,textarea:focus{border-color:#8c7aff}
-main{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 65px)}
-aside{padding:20px;border-right:1px solid #252938}
-section{padding:20px;min-width:0}
-h3{font-size:14px;color:#aeb5c8;margin-top:25px}
-small,.muted{color:#9299ad}
+button.secondary{background:#252b3e;color:#e8eaff}
+button.danger{background:#713344}
+input,textarea,select{width:100%;padding:12px;background:#0c101b;border:1px solid var(--line);border-radius:9px;color:white;outline:none}
+textarea{resize:vertical;min-height:100px}
+input:focus,textarea:focus,select:focus{border-color:var(--purple)}
+label{display:block;color:#b8bfd1;font-size:12px;margin:12px 0 7px}
+.top{height:65px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;background:#090b12;z-index:5}
+.brand{font-size:23px;font-weight:900;letter-spacing:-1px;color:#a997ff}
+.brand span{color:white}
+.layout{display:grid;grid-template-columns:235px 1fr;min-height:calc(100vh - 65px)}
+.sidebar{padding:17px 12px;border-right:1px solid var(--line);background:#0d1019}
+.navtitle{font-size:10px;color:#727d96;font-weight:800;letter-spacing:1.5px;padding:15px 10px 8px}
+.nav{width:100%;display:flex;align-items:center;gap:11px;text-align:left;background:transparent;color:#aeb6ca;padding:11px;border-radius:8px;font-weight:500;margin:2px 0}
+.nav.active,.nav:hover{background:#24213d;color:white}
+.nav .ico{width:20px;text-align:center;color:#a997ff}
+main{padding:28px;min-width:0;max-width:1600px;width:100%;margin:auto}
+.page{display:none}.page.active{display:block}
+h1{font-size:29px;margin:0 0 8px;letter-spacing:-.8px}
+h2{font-size:19px;margin:0 0 14px}
+h3{font-size:14px;margin:0 0 10px}
+p{color:var(--muted);line-height:1.6}
+.sub{color:var(--muted);margin:0 0 24px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px;min-width:0}
+.card.click{cursor:pointer;transition:.2s}.card.click:hover{border-color:var(--purple);transform:translateY(-2px)}
+.metric{font-size:29px;font-weight:800;margin:12px 0 4px}
+.tag{display:inline-block;background:#282344;color:#c7baff;padding:5px 9px;border-radius:30px;font-size:11px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .field{margin:12px 0}
-.field label{display:block;font-size:12px;color:#b7bdd0;margin-bottom:7px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.workspace{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:18px}
-.panel{background:#111522;border:1px solid #252b3b;border-radius:12px;overflow:hidden}
-.panelhead{padding:13px;border-bottom:1px solid #252b3b;font-size:13px;font-weight:bold}
-#editor{height:65vh;border:0;border-radius:0;resize:vertical;font-family:monospace;font-size:12px;line-height:1.5}
-iframe{width:100%;height:65vh;background:white;border:0}
-#status{font-size:12px;color:#a8aeba;margin-top:10px;min-height:20px}
-@media(max-width:800px){main{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid #252938}#editor,iframe{height:420px}}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+.small{font-size:12px;color:var(--muted)}
+.chatbox{height:300px;overflow:auto;background:#0b0f19;border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0}
+.msg{padding:11px 13px;border-radius:10px;margin:8px 0;max-width:90%;line-height:1.5;white-space:pre-wrap}
+.msg.ai{background:#20243a}.msg.user{background:#453b79;margin-left:auto}
+.promptrow{display:flex;gap:9px}.promptrow input{flex:1}
+.editor{height:420px;font:12px/1.5 monospace;white-space:pre;tab-size:2}
+.preview{width:100%;height:420px;background:white;border:1px solid var(--line);border-radius:9px}
+iframe{background:white}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px;border-bottom:1px solid var(--line)}
+th{color:#9ca6bd;font-size:12px}
+.status{font-size:12px;color:var(--cyan);min-height:20px;margin-top:8px}
+.tile{min-height:135px;display:flex;flex-direction:column;justify-content:space-between}
+.tile .symbol{font-size:27px}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+#toast{position:fixed;bottom:20px;right:20px;background:#26213e;border:1px solid #51458a;padding:13px 18px;border-radius:10px;display:none;z-index:10}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--line);gap:4px;padding:8px}.navtitle{display:none}.nav{white-space:nowrap;width:auto;font-size:12px}.nav .ico{display:none}main{padding:17px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:550px){.grid,.grid.two{grid-template-columns:1fr}.top{padding:0 13px}.editor{height:330px}.preview{height:330px}}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="logo">ZUDIC.AI</div>
-  <div class="muted">AI Website Studio</div>
+<header class="top">
+  <div class="brand">ZUDIC<span>.AI</span></div>
+  <div class="row"><span class="small">AGENCY WORKSPACE</span><span class="tag">AI STUDIO</span></div>
 </header>
 
-<main>
-<aside>
-  <h3>GEMINI API CONTROL CENTER</h3>
-
-  <div class="field">
-    <label>Gemini API Key</label>
-    <input id="apiKey" type="password" placeholder="Paste your Gemini API key">
-  </div>
-
-  <div class="actions">
-    <button class="secondary" onclick="toggleKey()">Show / Hide</button>
-    <button onclick="saveSettings()">Save API</button>
-  </div>
-
-  <div class="field">
-    <label>Gemini Model ID</label>
-    <input id="model" placeholder="Enter exact Gemini model ID">
-  </div>
-
-  <div class="actions">
-    <button class="secondary" onclick="testAPI()">Test Connection</button>
-  </div>
-
-  <div id="status">API not configured.</div>
-
-  <h3>WEBSITE GENERATOR</h3>
-  <div class="field">
-    <label>Describe your website</label>
-    <textarea id="prompt" rows="6" placeholder="Example: Create a premium fashion ecommerce website with product cards, categories, shopping cart and modern design."></textarea>
-  </div>
-  <button style="width:100%" onclick="generateSite()">Generate Website</button>
-
-  <h3>AI WEBSITE EDITOR</h3>
-  <div class="field">
-    <label>Tell AI what to change</label>
-    <textarea id="editPrompt" rows="3" placeholder="Example: Make the website more premium and add a hero section."></textarea>
-  </div>
-  <button style="width:100%" onclick="editSite()">Edit With AI</button>
-
-  <h3>PROJECT</h3>
-  <div class="actions">
-    <button class="secondary" onclick="downloadSite()">Download HTML</button>
-    <button class="secondary" onclick="updatePreview()">Refresh Preview</button>
-  </div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="navtitle">WORKSPACE</div>
+  <button class="nav active" data-page="dashboard"><span class="ico">⌂</span>Dashboard</button>
+  <button class="nav" data-page="advisor"><span class="ico">✧</span>AI Business Advisor</button>
+  <button class="nav" data-page="builder"><span class="ico">◈</span>Website Builder</button>
+  <button class="nav" data-page="editor"><span class="ico">⌘</span>AI Website Editor</button>
+  <div class="navtitle">CREATION STUDIOS</div>
+  <button class="nav" data-page="shopify"><span class="ico">▣</span>Shopify Studio</button>
+  <button class="nav" data-page="visual"><span class="ico">◇</span>2D / 3D Studio</button>
+  <button class="nav" data-page="templates"><span class="ico">▦</span>Templates</button>
+  <div class="navtitle">MANAGEMENT</div>
+  <button class="nav" data-page="projects"><span class="ico">▤</span>My Projects</button>
+  <button class="nav" data-page="api"><span class="ico">⚙</span>Gemini API Settings</button>
+  <button class="nav" data-page="agency"><span class="ico">♙</span>Agency Settings</button>
 </aside>
 
-<section>
-  <h2>Website Workspace</h2>
-  <p class="muted">Generate, edit and preview your website in one place.</p>
+<main>
 
-  <div class="workspace">
-    <div class="panel">
-      <div class="panelhead">HTML CODE EDITOR</div>
-      <textarea id="editor" spellcheck="false" placeholder="Your generated HTML will appear here..."></textarea>
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+  <h1>Welcome to ZUDIC.AI</h1>
+  <p class="sub">Your AI-powered website creation workspace.</p>
+  <div class="grid">
+    <div class="card"><span class="small">SAVED PROJECTS</span><div class="metric" id="projectCount">0</div><span class="small">Your website projects</span></div>
+    <div class="card"><span class="small">AI MODEL</span><div class="metric" style="font-size:20px" id="dashModel">Not set</div><span class="small">Configured Gemini model</span></div>
+    <div class="card"><span class="small">WORKSPACE</span><div class="metric" style="font-size:20px">Ready</div><span class="small">Local prototype</span></div>
+  </div>
+  <h2 style="margin-top:28px">Start creating</h2>
+  <div class="grid">
+    <div class="card click tile" onclick="go('advisor')"><div class="symbol">✧</div><div><h3>Ask AI Business Advisor</h3><p>Discover what website to create.</p></div></div>
+    <div class="card click tile" onclick="go('builder')"><div class="symbol">◈</div><div><h3>Generate a website</h3><p>Turn a prompt into a website.</p></div></div>
+    <div class="card click tile" onclick="go('shopify')"><div class="symbol">▣</div><div><h3>Create an online store</h3><p>Build an ecommerce storefront.</p></div></div>
+  </div>
+  <h2 style="margin-top:28px">Recent projects</h2>
+  <div class="card" id="recentProjects"><p>No projects yet. Generate your first website.</p></div>
+</section>
+
+<!-- ADVISOR -->
+<section class="page" id="advisor">
+  <h1>AI Business Advisor</h1>
+  <p class="sub">Tell ZUDIC about your idea. Gemini will help you decide what to build.</p>
+  <div class="grid two">
+    <div class="card">
+      <h2>Tell us about your business</h2>
+      <label>Business or idea</label><input id="business" placeholder="Example: Clothing brand, restaurant, fitness studio">
+      <label>Target customers</label><input id="audience" placeholder="Example: Young adults, local customers">
+      <label>Approximate budget</label>
+      <select id="budget"><option>Under ₹10,000</option><option>₹10,000–₹30,000</option><option>₹30,000–₹1 lakh</option><option>₹1 lakh–₹5 lakh</option><option>Above ₹5 lakh</option></select>
+      <label>Main goal</label>
+      <select id="goal"><option>Get more customers</option><option>Sell products online</option><option>Showcase my business</option><option>Build a web application</option><option>Create a personal brand</option></select>
+      <button onclick="getAdvice()">Get AI recommendations</button>
+      <div class="status" id="advisorStatus"></div>
     </div>
+    <div class="card">
+      <h2>Your AI Advisor</h2>
+      <div class="chatbox" id="advisorChat"><div class="msg ai">Hi! I'm your ZUDIC AI Business Advisor. Tell me about your idea and budget. I'll recommend a website type, pages and features.</div></div>
+      <div class="promptrow"><input id="advisorMessage" placeholder="Ask another question..." onkeydown="if(event.key==='Enter')advisorFollowup()"><button onclick="advisorFollowup()">Send</button></div>
+    </div>
+  </div>
+</section>
 
-    <div class="panel">
-      <div class="panelhead">LIVE WEBSITE PREVIEW</div>
-      <iframe id="preview" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+<!-- BUILDER -->
+<section class="page" id="builder">
+  <h1>AI Website Builder</h1>
+  <p class="sub">Create multipage websites from natural-language prompts.</p>
+  <div class="card">
+    <label>What should ZUDIC build?</label>
+    <textarea id="sitePrompt" rows="5" placeholder="Create a premium multi-page architecture studio website. Include home, about, services, projects and contact pages. Use a modern responsive design."></textarea>
+    <div class="grid two">
+      <div><label>Website category</label><select id="siteType"><option>Business website</option><option>Portfolio</option><option>Landing page</option><option>SaaS website</option><option>Blog / Magazine</option><option>Restaurant</option><option>Real estate</option><option>E-commerce</option><option>Web application</option><option>Custom experience</option></select></div>
+      <div><label>Design style</label><select id="siteStyle"><option>Premium modern</option><option>Minimal</option><option>Luxury</option><option>Creative and colourful</option><option>Corporate</option><option>Futuristic</option></select></div>
+    </div>
+    <div class="actions"><button onclick="generateWebsite()">✧ Generate with Gemini</button><button class="secondary" onclick="go('api')">Configure API</button></div>
+    <div class="status" id="builderStatus"></div>
+  </div>
+  <div class="grid two" style="margin-top:16px">
+    <div class="card"><div class="between"><h3>Generated website code</h3><button class="secondary" onclick="go('editor')">Open editor</button></div><textarea id="builderCode" class="editor" placeholder="Generated HTML will appear here..."></textarea></div>
+    <div class="card"><div class="between"><h3>Live preview</h3><button class="secondary" onclick="refreshBuilderPreview()">Refresh</button></div><iframe id="builderPreview" class="preview" sandbox="allow-scripts allow-forms"></iframe></div>
+  </div>
+  <div class="actions"><button onclick="saveProject('builderCode')">Save project</button><button class="secondary" onclick="downloadCode('builderCode')">Download HTML</button><button class="secondary" onclick="copyCode('builderCode')">Copy code</button></div>
+</section>
+
+<!-- EDITOR -->
+<section class="page" id="editor">
+  <h1>AI Website Editor</h1>
+  <p class="sub">Make changes through chat or directly edit your website code.</p>
+  <div class="card">
+    <h2>Chat with your website</h2>
+    <div class="promptrow"><input id="editPrompt" placeholder="Example: Add an animated hero section and improve mobile layout"><button onclick="aiEdit()">Apply edit</button></div>
+    <div class="status" id="editStatus"></div>
+  </div>
+  <div class="grid two" style="margin-top:16px">
+    <div class="card"><div class="between"><h3>Manual code editor</h3><span class="tag">HTML / CSS / JS</span></div><textarea id="mainCode" class="editor" placeholder="Paste or generate website HTML here..." oninput="refreshEditorPreview()"></textarea><div class="actions"><button onclick="refreshEditorPreview()">Update preview</button><button class="secondary" onclick="downloadCode('mainCode')">Download</button></div></div>
+    <div class="card"><h3>Live preview</h3><iframe id="mainPreview" class="preview" sandbox="allow-scripts allow-forms"></iframe></div>
+  </div>
+</section>
+
+<!-- SHOPIFY -->
+<section class="page" id="shopify">
+  <h1>Shopify Studio</h1>
+  <p class="sub">Design ecommerce storefronts and prepare Shopify-compatible themes.</p>
+  <div class="grid two">
+    <div class="card">
+      <h2>Store information</h2>
+      <label>Store / brand name</label><input id="storeName" placeholder="Example: NOVA FASHION">
+      <label>Products</label><input id="storeProducts" placeholder="Clothing, shoes, accessories">
+      <label>Store style</label><select id="storeStyle"><option>Luxury fashion</option><option>Minimal modern</option><option>Electronics</option><option>Beauty and skincare</option><option>Home and furniture</option><option>Sports and fitness</option></select>
+      <label>Store requirements</label><textarea id="storeRequirements" placeholder="Product collections, product pages, cart, size selector, filters..."></textarea>
+      <button onclick="generateStore()">Generate store design</button>
+      <div class="status" id="storeStatus"></div>
+    </div>
+    <div class="card">
+      <h2>Shopify workflow</h2>
+      <p>1. Generate storefront design.</p>
+      <p>2. Review and edit the design.</p>
+      <p>3. Convert the design into a Shopify theme.</p>
+      <p>4. Connect a merchant's Shopify store through an authorized app.</p>
+      <p>5. Publish and manage products through Shopify APIs.</p>
+      <hr>
+      <span class="tag">Design prototype available</span>
+      <p class="small">Real Shopify publishing, product synchronization and checkout require a Shopify app, OAuth and theme integration. This prototype does not connect to live stores.</p>
+    </div>
+  </div>
+  <div class="grid two" style="margin-top:16px">
+    <div class="card"><h3>Store HTML</h3><textarea id="storeCode" class="editor"></textarea><button onclick="downloadCode('storeCode')">Download design</button></div>
+    <div class="card"><h3>Store preview</h3><iframe id="storePreview" class="preview" sandbox="allow-scripts allow-forms"></iframe></div>
+  </div>
+</section>
+
+<!-- 2D 3D -->
+<section class="page" id="visual">
+  <h1>2D / 3D Studio</h1>
+  <p class="sub">Create interactive visual website experiences.</p>
+  <div class="grid two">
+    <div class="card">
+      <h2>Experience generator</h2>
+      <label>Choose experience</label><select id="visualType"><option>2D animated website</option><option>3D product showcase</option><option>Interactive portfolio</option><option>3D landing page</option><option>Creative brand experience</option></select>
+      <label>Describe your experience</label><textarea id="visualPrompt" placeholder="Example: Create a futuristic 3D sneaker showcase with a dark background, glowing typography and interactive product cards."></textarea>
+      <button onclick="generateVisual()">Generate experience</button>
+      <div class="status" id="visualStatus"></div>
+    </div>
+    <div class="card">
+      <h2>What this studio supports</h2>
+      <p>• CSS animations and transitions</p>
+      <p>• Interactive 2D layouts</p>
+      <p>• Three.js-based 3D experiences when generated with the required library</p>
+      <p>• Scroll effects and interactive elements</p>
+      <p class="small">Complex 3D projects may need additional assets, optimization and testing.</p>
+    </div>
+  </div>
+  <div class="grid two" style="margin-top:16px">
+    <div class="card"><h3>Generated code</h3><textarea id="visualCode" class="editor"></textarea><button onclick="downloadCode('visualCode')">Download</button></div>
+    <div class="card"><h3>Preview</h3><iframe id="visualPreview" class="preview" sandbox="allow-scripts allow-forms"></iframe></div>
+  </div>
+</section>
+
+<!-- TEMPLATES -->
+<section class="page" id="templates">
+  <h1>Template Gallery</h1>
+  <p class="sub">Start from an idea and customize it with AI.</p>
+  <div class="grid">
+    <div class="card click tile"><div class="symbol">◈</div><div><h3>Agency Website</h3><p>Services, case studies and contact.</p><button onclick="useTemplate('agency')">Use template</button></div></div>
+    <div class="card click tile"><div class="symbol">▣</div><div><h3>Fashion Store</h3><p>Products, collections and cart demo.</p><button onclick="useTemplate('fashion')">Use template</button></div></div>
+    <div class="card click tile"><div class="symbol">✧</div><div><h3>SaaS Landing Page</h3><p>Product features and pricing.</p><button onclick="useTemplate('saas')">Use template</button></div></div>
+    <div class="card click tile"><div class="symbol">◇</div><div><h3>Creative Portfolio</h3><p>Projects and personal profile.</p><button onclick="useTemplate('portfolio')">Use template</button></div></div>
+    <div class="card click tile"><div class="symbol">⌂</div><div><h3>Restaurant</h3><p>Menu, location and reservations UI.</p><button onclick="useTemplate('restaurant')">Use template</button></div></div>
+    <div class="card click tile"><div class="symbol">▤</div><div><h3>Real Estate</h3><p>Property cards and listings.</p><button onclick="useTemplate('realestate')">Use template</button></div></div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="page" id="projects">
+  <h1>My Projects</h1>
+  <p class="sub">Your saved website projects on this browser.</p>
+  <div class="card"><div class="between"><h2>Saved projects</h2><button class="secondary" onclick="renderProjects()">Refresh</button></div><div id="projectList"></div></div>
+</section>
+
+<!-- API -->
+<section class="page" id="api">
+  <h1>Gemini API Control Center</h1>
+  <p class="sub">Configure the AI engine used by your ZUDIC.AI prototype.</p>
+  <div class="grid two">
+    <div class="card">
+      <h2>Connection settings</h2>
+      <label>Gemini API key</label><input id="apiKey" type="password" placeholder="Paste your API key">
+      <div class="actions"><button class="secondary" onclick="toggleKey()">Show / hide key</button><button onclick="saveAPI()">Save settings</button></div>
+      <label>Gemini model ID</label><input id="modelId" placeholder="Enter the exact model ID from Google">
+      <p class="small">Enter a model ID supported by your Google AI Studio API key. Do not assume that a model called 3.8 exists.</p>
+      <div class="actions"><button onclick="testAPI()">Test connection</button><button class="danger" onclick="clearAPI()">Clear saved API</button></div>
+      <div class="status" id="apiStatus"></div>
+    </div>
+    <div class="card">
+      <h2>AI engine status</h2>
+      <p>Provider: Google Gemini</p>
+      <p id="apiState">Connection: Not tested</p>
+      <p id="modelState">Model: Not configured</p>
+      <hr>
+      <p class="small">This browser prototype stores the key in local browser storage. Anyone with access to this browser can potentially access it. For a commercial multi-user platform, route Gemini requests through a secure backend and never expose a shared production key in frontend code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- AGENCY -->
+<section class="page" id="agency">
+  <h1>Agency Settings</h1>
+  <p class="sub">Workspace preferences and future team-management options.</p>
+  <div class="grid two">
+    <div class="card">
+      <h2>Agency profile</h2>
+      <label>Agency name</label><input id="agencyName" placeholder="Your agency name">
+      <label>Contact email</label><input id="agencyEmail" placeholder="hello@example.com">
+      <button onclick="saveAgency()">Save agency profile</button>
+      <div class="status" id="agencyStatus"></div>
+    </div>
+    <div class="card">
+      <h2>Optional team module</h2>
+      <p>Planned commercial upgrade:</p>
+      <p>• Owner account and employee invitations</p>
+      <p>• Employee approval workflow</p>
+      <p>• Project permissions</p>
+      <p>• Activity tracking</p>
+      <span class="tag">Not enabled in this prototype</span>
+      <p class="small">No login, employee approval or security system is implemented in this demo.</p>
     </div>
   </div>
 </section>
 </main>
+</div>
+<div id="toast"></div>
 
 <script>
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
+let lastAdvice="";
+let projects=JSON.parse(localStorage.getItem("zudic_projects")||"[]");
 
-function setStatus(message){
-  $("status").textContent = message;
+function toast(s){$("toast").textContent=s;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2600)}
+function go(page){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
+ $(page).classList.add("active");
+ history.replaceState(null,"","#"+page);
+ if(page==="projects")renderProjects();
+ if(page==="dashboard")updateDashboard();
 }
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>go(b.dataset.page));
+window.addEventListener("load",()=>{
+ const p=location.hash.slice(1);
+ if(p&&$(p))go(p);
+ loadAPI();updateDashboard();renderProjects();
+});
+function setStatus(id,s){$(id).textContent=s}
+function getKey(){return $("apiKey").value.trim()||localStorage.getItem("zudic_key")||""}
+function getModel(){return $("modelId").value.trim()||localStorage.getItem("zudic_model")||""}
 
-function toggleKey(){
-  $("apiKey").type =
-    $("apiKey").type === "password" ? "text" : "password";
+function loadAPI(){
+ $("apiKey").value=localStorage.getItem("zudic_key")||"";
+ $("modelId").value=localStorage.getItem("zudic_model")||"";
+ updateDashboard();
 }
-
-function saveSettings(){
-  const key = $("apiKey").value.trim();
-  const model = $("model").value.trim();
-
-  if(!key || !model){
-    setStatus("Enter both your API key and model ID.");
-    return;
-  }
-
-  localStorage.setItem("zudic_gemini_key",key);
-  localStorage.setItem("zudic_gemini_model",model);
-  setStatus("API settings saved in this browser.");
+function saveAPI(){
+ const k=$("apiKey").value.trim(),m=$("modelId").value.trim();
+ if(!k||!m)return setStatus("apiStatus","Enter both API key and model ID.");
+ localStorage.setItem("zudic_key",k);localStorage.setItem("zudic_model",m);
+ setStatus("apiStatus","Settings saved in this browser.");
+ $("modelState").textContent="Model: "+m;updateDashboard();
 }
-
-function loadSettings(){
-  $("apiKey").value = localStorage.getItem("zudic_gemini_key") || "";
-  $("model").value = localStorage.getItem("zudic_gemini_model") || "";
+function clearAPI(){
+ localStorage.removeItem("zudic_key");localStorage.removeItem("zudic_model");
+ $("apiKey").value="";$("modelId").value="";
+ setStatus("apiStatus","Saved API settings cleared.");updateDashboard();
 }
+function toggleKey(){$("apiKey").type=$("apiKey").type==="password"?"text":"password"}
 
-async function callGemini(prompt){
-  const key = $("apiKey").value.trim();
-  const model = $("model").value.trim();
-
-  if(!key || !model){
-    throw new Error("Enter your Gemini API key and model ID first.");
-  }
-
-  const endpoint =
-    "https://generativelanguage.googleapis.com/v1beta/models/" +
-    encodeURIComponent(model) +
-    ":generateContent?key=" + encodeURIComponent(key);
-
-  const response = await fetch(endpoint,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      systemInstruction:{
-        parts:[{
-          text:"You are ZUDIC AI, an expert website developer. Return complete, working, self-contained HTML with embedded CSS and JavaScript. Return ONLY the HTML document. Do not use Markdown code fences."
-        }]
-      },
-      contents:[{
-        role:"user",
-        parts:[{text:prompt}]
-      }],
-      generationConfig:{
-        temperature:0.7,
-        maxOutputTokens:12000
-      }
-    })
-  });
-
-  const data = await response.json();
-
-  if(!response.ok){
-    throw new Error(data.error?.message || "Gemini API request failed.");
-  }
-
-  const result = data.candidates?.[0]?.content?.parts
-    ?.map(part => part.text || "")
-    .join("");
-
-  if(!result) throw new Error("Gemini returned an empty response.");
-
-  return result
-    .replace(/^```html\s*/i,"")
-    .replace(/^```\s*/,"")
-    .replace(/\s*```$/,"")
-    .trim();
+async function gemini(prompt){
+ const key=getKey(),model=getModel();
+ if(!key||!model)throw Error("Configure your Gemini API key and model ID in API Settings first.");
+ const url="https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent?key="+encodeURIComponent(key);
+ const response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+  systemInstruction:{parts:[{text:"You are ZUDIC AI, an expert website developer and digital agency consultant. Follow the user's instructions. When asked to generate or modify a website, return a complete self-contained HTML document with embedded CSS and JavaScript. Make it responsive, visually polished and functional. Include multiple pages or sections when requested. Return only the HTML code, without Markdown fences."}]},
+  contents:[{role:"user",parts:[{text:prompt}]}],
+  generationConfig:{temperature:.7,maxOutputTokens:12000}
+ })});
+ const data=await response.json();
+ if(!response.ok)throw Error(data.error?.message||"Gemini request failed.");
+ const result=data.candidates?.[0]?.content?.parts?.map(p=>p.text||"").join("");
+ if(!result)throw Error("Gemini returned no text. Try a shorter prompt.");
+ return result.replace(/^```(?:html)?\s*/i,"").replace(/\s*```$/,"").trim();
 }
-
 async function testAPI(){
-  try{
-    setStatus("Testing Gemini connection...");
-    const result = await callGemini("Reply with exactly: ZUDIC AI CONNECTED");
-    setStatus("Connection successful: " + result.slice(0,100));
-  }catch(error){
-    setStatus("Connection failed: " + error.message);
-  }
+ try{setStatus("apiStatus","Testing connection...");
+ const r=await gemini("Reply with exactly: ZUDIC AI connected.");
+ setStatus("apiStatus","Connected successfully: "+r.slice(0,100));
+ $("apiState").textContent="Connection: Successful";
+ }catch(e){setStatus("apiStatus","Error: "+e.message);$("apiState").textContent="Connection: Failed"}
 }
-
-async function generateSite(){
-  const prompt = $("prompt").value.trim();
-  if(!prompt){
-    setStatus("Describe the website you want to create.");
-    return;
-  }
-
-  try{
-    setStatus("Gemini is generating your website...");
-    const html = await callGemini(
-      "Create a complete professional website based on this brief:\n" + prompt +
-      "\nInclude responsive design, attractive visuals, working navigation and useful interactions."
-    );
-
-    $("editor").value = html;
-    updatePreview();
-    setStatus("Website generated successfully.");
-  }catch(error){
-    setStatus("Generation failed: " + error.message);
-  }
+async function getAdvice(){
+ const b=$("business").value,a=$("audience").value,bu=$("budget").value,g=$("goal").value;
+ if(!b)return setStatus("advisorStatus","Enter your business or idea first.");
+ $("advisorChat").innerHTML+='<div class="msg user">'+esc(b+" | "+a+" | "+bu+" | "+g)+'</div>';
+ try{
+ setStatus("advisorStatus","Advisor is thinking...");
+ const r=await gemini("Act as a digital business advisor. Recommend what kind of website or web app this customer should create. Business: "+b+". Audience: "+a+". Budget: "+bu+". Goal: "+g+". Suggest 3 suitable options, explain the best option, list pages and features, give an approximate budget allocation (not a guaranteed market quote), and finish with a short website-generation brief. Keep the answer practical.");
+ lastAdvice=r;addMsg("advisorChat",r,"ai");setStatus("advisorStatus","Recommendation ready.");
+ }catch(e){setStatus("advisorStatus",e.message)}
 }
-
-async function editSite(){
-  const instruction = $("editPrompt").value.trim();
-  const currentCode = $("editor").value;
-
-  if(!instruction || !currentCode){
-    setStatus("Enter an edit instruction and generate a website first.");
-    return;
-  }
-
-  try{
-    setStatus("AI is editing your website...");
-    const html = await callGemini(
-      "Modify this existing website according to the instruction. Preserve existing working features where possible. Return the COMPLETE updated HTML only.\n\nINSTRUCTION:\n" +
-      instruction + "\n\nCURRENT HTML:\n" + currentCode
-    );
-
-    $("editor").value = html;
-    updatePreview();
-    setStatus("Website updated successfully.");
-  }catch(error){
-    setStatus("AI editing failed: " + error.message);
-  }
+async function advisorFollowup(){
+ const q=$("advisorMessage").value.trim();if(!q)return;
+ $("advisorMessage").value="";addMsg("advisorChat",q,"user");
+ try{const r=await gemini("Continue this business-advisor conversation. Previous recommendation: "+lastAdvice+". Customer asks: "+q);lastAdvice=r;addMsg("advisorChat",r,"ai")}
+ catch(e){addMsg("advisorChat",e.message,"ai")}
 }
+function addMsg(id,text,kind){const d=document.createElement("div");d.className="msg "+kind;d.textContent=text;$(id).appendChild(d);$(id).scrollTop=$(id).scrollHeight}
 
-function updatePreview(){
-  $("preview").srcdoc = $("editor").value;
+async function generateWebsite(){
+ const p=$("sitePrompt").value.trim();if(!p)return setStatus("builderStatus","Describe your website first.");
+ try{
+ setStatus("builderStatus","Gemini is generating your website...");
+ const html=await gemini("Build a complete "+$("siteType").value+" using this design style: "+$("siteStyle").value+". Brief: "+p+". Include multiple distinct pages or a multi-section navigation experience as appropriate. Make links and interactions work. Return complete HTML.");
+ $("builderCode").value=html;refreshBuilderPreview();$("mainCode").value=html;refreshEditorPreview();
+ setStatus("builderStatus","Website generated. Review the preview and save your project.");
+ }catch(e){setStatus("builderStatus","Error: "+e.message)}
 }
+function refreshBuilderPreview(){$("builderPreview").srcdoc=$("builderCode").value}
+function refreshEditorPreview(){$("mainPreview").srcdoc=$("mainCode").value}
 
-function downloadSite(){
-  const html = $("editor").value;
-  if(!html){
-    setStatus("Generate a website before downloading.");
-    return;
-  }
-
-  const blob = new Blob([html],{type:"text/html"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "zudic-ai-website.html";
-  a.click();
-  URL.revokeObjectURL(url);
-  setStatus("HTML download started.");
+async function aiEdit(){
+ const q=$("editPrompt").value.trim(),code=$("mainCode").value;
+ if(!q||!code)return setStatus("editStatus","Enter an instruction and add website code first.");
+ try{
+ setStatus("editStatus","Gemini is editing your website...");
+ const r=await gemini("Modify this complete website according to the instruction. Preserve its existing features and pages where possible. Return the COMPLETE updated HTML only.\nInstruction: "+q+"\nExisting HTML:\n"+code);
+ $("mainCode").value=r;refreshEditorPreview();$("builderCode").value=r;refreshBuilderPreview();
+ setStatus("editStatus","Website updated.");
+ }catch(e){setStatus("editStatus","Error: "+e.message)}
 }
-
-$("editor").addEventListener("input",updatePreview);
-
-loadSettings();
+async function generateStore(){
+ const name=$("storeName").value||"YOUR BRAND",products=$("storeProducts").value||"Products";
+ const brief="Create a premium responsive ecommerce storefront for brand "+name+". Products: "+products+". Style: "+$("storeStyle").value+". Requirements: "+$("storeRequirements").value+". Include home, collection, product cards, product details, navigation, search/filter UI and a working demo cart using JavaScript. This is a standalone storefront demo, not a Shopify theme. Return complete HTML.";
+ try{setStatus("storeStatus","Generating store...");
+ const r=await gemini(brief);$("storeCode").value=r;$("storePreview").srcdoc=r;setStatus("storeStatus","Storefront generated. This is a standalone demo, not yet connected to Shopify.");}
+ catch(e){setStatus("storeStatus","Error: "+e.message)}
+}
+async function generateVisual(){
+ const q=$("visualPrompt").value.trim();if(!q)return setStatus("visualStatus","Describe your experience first.");
+ try{setStatus("visualStatus","Generating visual experience...");
+ const r=await gemini("Create a "+$("visualType").value+". Brief: "+q+". Use CSS animation and/or Three.js from a public CDN if needed. Make the experience responsive. Return complete HTML.");
+ $("visualCode").value=r;$("visualPreview").srcdoc=r;setStatus("visualStatus","Generated. Test interactions and mobile layout.");}
+ catch(e){setStatus("visualStatus","Error: "+e.message)}
+}
+function useTemplate(type){
+ const briefs={
+ agency:"Create a premium creative digital agency website with home, services, work, about and contact pages.",
+ fashion:"Create a premium fashion ecommerce storefront with product cards, categories, product details and a demo cart.",
+ saas:"Create a SaaS landing website with hero, features, pricing, testimonials, FAQ and contact.",
+ portfolio:"Create a creative portfolio with about, projects, skills and contact pages.",
+ restaurant:"Create a restaurant website with menu, story, gallery, location and booking form UI.",
+ realestate:"Create a premium real estate website with property cards, search filters, details and contact."
+ };
+ $("sitePrompt").value=briefs[type];$("siteType").value=type==="fashion"?"E-commerce":type==="saas"?"SaaS website":type==="portfolio"?"Portfolio":type==="restaurant"?"Restaurant":type==="realestate"?"Real estate":"Business website";
+ go("builder");
+}
+function saveProject(source){
+ const code=$(source).value;if(!code)return toast("No website code to save.");
+ const name=prompt("Enter a name for this project:", "My ZUDIC Website");
+ if(!name)return;
+ projects.unshift({id:Date.now(),name,code,updated:new Date().toLocaleString()});
+ localStorage.setItem("zudic_projects",JSON.stringify(projects));updateDashboard();toast("Project saved.");
+}
+function renderProjects(){
+ projects=JSON.parse(localStorage.getItem("zudic_projects")||"[]");
+ const box=$("projectList");box.innerHTML="";
+ if(!projects.length){box.innerHTML="<p>No projects saved yet. Generate a website and select Save project.</p>";return}
+ projects.forEach(p=>{
+ const row=document.createElement("div");row.className="between";row.style.padding="13px 0";row.style.borderBottom="1px solid var(--line)";
+ const info=document.createElement("div");const title=document.createElement("b");title.textContent=p.name;const date=document.createElement("div");date.className="small";date.textContent=p.updated;info.append(title,date);
+ const actions=document.createElement("div");actions.className="row";
+ const open=document.createElement("button");open.textContent="Open";open.onclick=()=>{ $("mainCode").value=p.code;refreshEditorPreview();go("editor")};
+ const del=document.createElement("button");del.textContent="Delete";del.className="danger";del.onclick=()=>{projects=projects.filter(x=>x.id!==p.id);localStorage.setItem("zudic_projects",JSON.stringify(projects));renderProjects();updateDashboard()};
+ actions.append(open,del);row.append(info,actions);box.append(row);
+ });
+}
+function updateDashboard(){
+ projects=JSON.parse(localStorage.getItem("zudic_projects")||"[]");
+ $("projectCount").textContent=projects.length;
+ $("dashModel").textContent=localStorage.getItem("zudic_model")||"Not set";
+ const r=$("recentProjects");r.innerHTML="";
+ if(!projects.length){r.textContent="No projects yet. Generate your first website.";return}
+ projects.slice(0,3).forEach(p=>{const d=document.createElement("p");d.textContent=p.name+" — "+p.updated;r.append(d)});
+}
+function downloadCode(id){
+ const code=$(id).value;if(!code)return toast("Nothing to download.");
+ const blob=new Blob([code],{type:"text/html"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="zudic-website.html";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function copyCode(id){
+ try{await navigator.clipboard.writeText($(id).value);toast("Code copied.");}
+ catch(e){toast("Clipboard unavailable in this browser.")}
+}
+function saveAgency(){
+ localStorage.setItem("zudic_agency_name",$("agencyName").value);
+ localStorage.setItem("zudic_agency_email",$("agencyEmail").value);
+ setStatus("agencyStatus","Agency profile saved locally.");
+}
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("agencyName").value=localStorage.getItem("zudic_agency_name")||"";
+$("agencyEmail").value=localStorage.getItem("zudic_agency_email")||"";
 </script>
 </body>
 </html>
